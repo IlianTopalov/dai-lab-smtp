@@ -11,6 +11,10 @@ public class Grouper {
 			throw new IllegalArgumentException("groupCount must be greater than 0.");
 		}
 
+		if (groupCount > lines.size()) {
+			throw new IllegalArgumentException("groupCount must be less than the number of lines.");
+		}
+
 		int elementsPerGroup = lines.size() / groupCount + (lines.size() % groupCount == 0 ? 0 : 1);
 		List<List<T>> result = new ArrayList<>(groupCount);
 		for (int i = 0; i < groupCount; ++i) {
