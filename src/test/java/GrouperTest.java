@@ -29,4 +29,23 @@ public class GrouperTest {
 		var groupedLines = Grouper.groupLines(list, 3);
 		Assertions.assertEquals(expected, groupedLines);
 	}
+
+	@Test
+	public void groupLinesThrows() {
+		List<String> list = List.of(
+			"Paul",
+			"Pierre",
+			"Jean-Luc",
+			"Artur",
+			"Ilian",
+			"Fabrice",
+			"Nicolas",
+			"Pedro",
+			"Samih",
+			"Leo"
+		);
+
+		Assertions.assertThrows(IllegalArgumentException.class, () -> Grouper.groupLines(list, 0));
+		Assertions.assertThrows(IllegalArgumentException.class, () -> Grouper.groupLines(list, 11));
+	}
 }
