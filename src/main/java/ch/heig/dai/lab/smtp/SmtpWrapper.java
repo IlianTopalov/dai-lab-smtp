@@ -4,7 +4,7 @@ public class SmtpWrapper {
 
     private SmtpWrapper() {}
 
-    public String wrap(String from, String to, String content) {
+    public static String wrap(String from, String to, String content) {
         /**
          *                      EHLO bar.com
          *                      MAIL FROM:%s
