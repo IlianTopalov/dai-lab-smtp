@@ -1,28 +1,29 @@
 package ch.heig.dai.lab.smtp;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ListReader {
+
     private ListReader() {}
-    public static ArrayList<String> readList(String fileName) {
-        ArrayList<String> list = new ArrayList<String>() {};
+
+    public static List<String> readList(String fileName) throws IOException {
+        List<String> list = new LinkedList<>();
 
         // Open file, read and append each line to <list>
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+            new FileInputStream(fileName),
+            StandardCharsets.UTF_8
+        ));
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                list.add(line);
-            }
+        String line;
+        while ((line = reader.readLine()) != null)
+            list.add(line);
 
-            reader.close();
-            return list;
+        reader.close();
 
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-            return null;
-        }
+        return list;
     }
 }
