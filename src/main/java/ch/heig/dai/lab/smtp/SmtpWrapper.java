@@ -18,6 +18,7 @@ public class SmtpWrapper {
 			%s
 
 			QUIT
-			""", from, to, from, to, content);
+			""",
+			from, to, from, to, content);
 	}
 }
