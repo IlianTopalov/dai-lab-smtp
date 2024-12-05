@@ -1,15 +1,12 @@
 package ch.heig.dai.lab.smtp;
 
 import java.io.*;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Random;
 
 public class Main {
 
-	private static final String HOST = "localhost";
-	private static final int PORT = 1025;
+	private static final ServerData SERVER = new ServerData("localhost", 1025);
 
 	private static final int MIN_ADDRESSES_IN_GROUP = 2;
 	private static final int MAX_ADDRESSES_IN_GROUP = 5;
@@ -55,22 +52,10 @@ public class Main {
 			String message = messages.get(msgIdx);
 			String sender = group.getFirst();
 
-			try (
-				Socket socket = new Socket(HOST, PORT);
-				var is = new BufferedReader(new InputStreamReader(
-					socket.getInputStream(),
-					StandardCharsets.UTF_8
-				))
-			) {
-				SMTP.checkResponseCode(is.readLine(), 220);
+			for (int i = 1; i < group.size(); ++i) {
+				String receiver = group.get(i);
 
-				for (int i = 1; i < group.size(); ++i) {
-					String receiver = group.get(i);
-
-					SMTP.sendMessage(socket, sender, receiver, SUBJECT, message);
-				}
-			} catch (IOException e) {
-				System.err.println(e.getMessage());
+				SMTP.sendMessage(SERVER, sender, receiver, SUBJECT, message);
 			}
 		}
 	}

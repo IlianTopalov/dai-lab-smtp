@@ -19,20 +19,21 @@ public class SMTP {
 		%s
 		\r
 		.\r
-		
+  
 		""";
 	private static final String MSG_QUIT = "QUIT";
 
+	private static final int START_CODE = 220;
 	private static final int OK_CODE = 250;
 	private static final int DATA_CODE = 354;
-	private static final int QUIT_CODE = 221;
 
 	private SMTP() {}
 
 
 
-	public static void sendMessage(Socket connection, String from, String to, String subject, String content) throws IOException {
+	public static void sendMessage(ServerData server, String from, String to, String subject, String content) {
 		try (
+			Socket connection = new Socket(server.host(), server.port());
 			var os = new BufferedWriter(new OutputStreamWriter(
 				connection.getOutputStream(),
 				StandardCharsets.UTF_8
@@ -42,6 +43,8 @@ public class SMTP {
 				StandardCharsets.UTF_8
 			))
 		) {
+			checkResponseCode(is.readLine(), START_CODE);
+
 			// Message initiation
 			sendAndCheckResponse(os, is, MSG_HELO);
 
@@ -58,14 +61,16 @@ public class SMTP {
 			sendAndCheckResponse(os, is, MSG_BODY.formatted(from, to, subject, content));
 
 			// Quit
-			sendAndCheckResponse(os, is, MSG_QUIT, QUIT_CODE);
+			send(os, MSG_QUIT);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 		}
 
 	}
 
-	public static void checkResponseCode(String response, int code) throws IOException {
+
+
+	private static void checkResponseCode(String response, int code) throws IOException {
 		int responseCode;
 		try {
 			responseCode = Integer.parseInt(response.split(" ")[0]);
@@ -77,13 +82,17 @@ public class SMTP {
 			throw new IOException("Expected response code: %d\nActual response code: %d\n".formatted(code, responseCode));
 	}
 
-	public static void sendAndCheckResponse(BufferedWriter os, BufferedReader is, String message) throws IOException {
+	private static void send(BufferedWriter os, String message) throws IOException {
+		os.write(message + "\r\n");
+		os.flush();
+	}
+
+	private static void sendAndCheckResponse(BufferedWriter os, BufferedReader is, String message) throws IOException {
 		sendAndCheckResponse(os, is, message, OK_CODE);
 	}
 
-	public static void sendAndCheckResponse(BufferedWriter os, BufferedReader is, String message, int code) throws IOException {
-		os.write(message + "\n");
-		os.flush();
+	private static void sendAndCheckResponse(BufferedWriter os, BufferedReader is, String message, int code) throws IOException {
+		send(os, message);
 		checkResponseCode(is.readLine(), code);
 	}
 }
