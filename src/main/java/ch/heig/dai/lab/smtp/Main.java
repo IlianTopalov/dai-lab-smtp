@@ -14,6 +14,8 @@ public class Main {
 	private static final int MIN_ADDRESSES_IN_GROUP = 2;
 	private static final int MAX_ADDRESSES_IN_GROUP = 5;
 
+	private static final String SUBJECT = "Prank";
+
 	public static void main(String[] args) {
 		if (args.length != 3) {
 			System.err.println("Correct command: smtp <addresses file> <messages file> <group count>");
@@ -65,7 +67,7 @@ public class Main {
 				for (int i = 1; i < group.size(); ++i) {
 					String receiver = group.get(i);
 
-					SMTP.sendMessage(socket, sender, receiver, message);
+					SMTP.sendMessage(socket, sender, receiver, SUBJECT, message);
 				}
 			} catch (IOException e) {
 				System.err.println(e.getMessage());

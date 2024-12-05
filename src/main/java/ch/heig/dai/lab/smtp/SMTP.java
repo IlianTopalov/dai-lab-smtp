@@ -14,7 +14,7 @@ public class SMTP {
 		"""
 		From: %s
 		To: %s
-		Subject: Troll
+		Subject: %s
 
 		%s
 		\r
@@ -31,7 +31,7 @@ public class SMTP {
 
 
 
-	public static void sendMessage(Socket connection, String from, String to, String content) throws IOException {
+	public static void sendMessage(Socket connection, String from, String to, String subject, String content) throws IOException {
 		try (
 			var os = new BufferedWriter(new OutputStreamWriter(
 				connection.getOutputStream(),
@@ -55,7 +55,7 @@ public class SMTP {
 			sendAndCheckResponse(os, is, MSG_DATA, DATA_CODE);
 
 			// Content
-			sendAndCheckResponse(os, is, MSG_BODY.formatted(from, to, content));
+			sendAndCheckResponse(os, is, MSG_BODY.formatted(from, to, subject, content));
 
 			// Quit
 			sendAndCheckResponse(os, is, MSG_QUIT, QUIT_CODE);
