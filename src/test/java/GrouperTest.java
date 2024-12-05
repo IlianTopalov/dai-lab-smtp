@@ -1,4 +1,4 @@
-import ch.heig.dai.lab.smtp.Grouper;
+import ch.heig.dai.lab.smtp.FileUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +26,7 @@ public class GrouperTest {
 			List.of("Samih", "Leo")
 		);
 
-		var groupedLines = Grouper.groupLines(list, 3);
+		var groupedLines = FileUtil.groupLines(list, 3);
 		Assertions.assertEquals(expected, groupedLines);
 	}
 
@@ -45,7 +45,7 @@ public class GrouperTest {
 			"Leo"
 		);
 
-		Assertions.assertThrows(IllegalArgumentException.class, () -> Grouper.groupLines(list, 0));
-		Assertions.assertThrows(IllegalArgumentException.class, () -> Grouper.groupLines(list, 11));
+		Assertions.assertThrows(IllegalArgumentException.class, () -> FileUtil.groupLines(list, 0));
+		Assertions.assertThrows(IllegalArgumentException.class, () -> FileUtil.groupLines(list, 11));
 	}
 }

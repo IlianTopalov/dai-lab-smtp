@@ -1,10 +1,34 @@
 package ch.heig.dai.lab.smtp;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public class Grouper {
-	private Grouper() {}
+public class FileUtil {
+	private FileUtil() {}
+
+	public static List<String> readList(String fileName) throws IOException {
+		List<String> list = new LinkedList<>();
+
+		// Open file, read and append each line to <list>
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+			new FileInputStream(fileName),
+			StandardCharsets.UTF_8
+		));
+
+		String line;
+		while ((line = reader.readLine()) != null)
+			list.add(line);
+
+		reader.close();
+
+		return list;
+	}
 
 	public static <T> List<List<T>> groupLines(List<T> lines, int groupCount) {
 		if (groupCount < 1) {

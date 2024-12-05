@@ -24,8 +24,8 @@ public class Main {
 		List<String> messages;
 
 		try {
-			addresses = ListReader.readList(args[0]);
-			messages = ListReader.readList(args[1]);
+			addresses = FileUtil.readList(args[0]);
+			messages = FileUtil.readList(args[1]);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 
@@ -44,7 +44,7 @@ public class Main {
 			return;
 		}
 
-		List<List<String>> groups = Grouper.groupLines(addresses, groupCount);
+		List<List<String>> groups = FileUtil.groupLines(addresses, groupCount);
 		SMTPSender mailCannon = new SMTPSender(SERVER);
 
 		for (List<String> group : groups) {
