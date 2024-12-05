@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-public class SMTP {
+public class SMTPSender {
 
 	private static final String MSG_HELO = "HELO client";
 	private static final String MSG_FROM = "MAIL FROM: <%s>";
@@ -27,11 +27,21 @@ public class SMTP {
 	private static final int OK_CODE = 250;
 	private static final int DATA_CODE = 354;
 
-	private SMTP() {}
+	private final ServerData server;
 
+	public SMTPSender(ServerData server) {
+		this.server = server;
+	}
 
-
-	public static void sendMessage(ServerData server, String from, String to, String subject, String content) {
+	/**
+	 * Sends a message to the registered SMTP server.
+	 *
+	 * @param from    sender
+	 * @param to      recipient
+	 * @param subject subject of the e-mail
+	 * @param content body of the e-mail
+	 */
+	public void sendMessage(String from, String to, String subject, String content) {
 		try (
 			Socket connection = new Socket(server.host(), server.port());
 			var os = new BufferedWriter(new OutputStreamWriter(

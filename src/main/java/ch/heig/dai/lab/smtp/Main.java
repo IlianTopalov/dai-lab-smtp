@@ -45,6 +45,7 @@ public class Main {
 		}
 
 		List<List<String>> groups = Grouper.groupLines(addresses, groupCount);
+		SMTPSender mailCannon = new SMTPSender(SERVER);
 
 		for (List<String> group : groups) {
 			int msgIdx = Math.abs(new Random().nextInt() % messages.size());
@@ -55,7 +56,7 @@ public class Main {
 			for (int i = 1; i < group.size(); ++i) {
 				String receiver = group.get(i);
 
-				SMTP.sendMessage(SERVER, sender, receiver, SUBJECT, message);
+				mailCannon.sendMessage(sender, receiver, SUBJECT, message);
 			}
 		}
 	}
