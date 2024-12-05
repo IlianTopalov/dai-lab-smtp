@@ -68,6 +68,11 @@ public class SMTP {
 
 	}
 
+	@Override
+	public String toString() {
+		return "SMTP sender - MX at " + server;
+	}
+
 
 
 	private static void checkResponseCode(String response, int code) throws IOException {
