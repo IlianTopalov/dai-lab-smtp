@@ -109,7 +109,6 @@ public class SMTPSender implements Closeable {
 
 
 	private void checkResponseCode(String response, int code) throws IOException {
-		System.out.println("S> " + response);
 		int responseCode;
 		try {
 			responseCode = Integer.parseInt(response.split(" ")[0]);
@@ -122,7 +121,6 @@ public class SMTPSender implements Closeable {
 	}
 
 	private void send(String message) throws IOException {
-		System.out.println("C> " + message);
 		os.write(message + "\r\n");
 		os.flush();
 	}
