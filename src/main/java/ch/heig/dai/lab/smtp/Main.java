@@ -45,18 +45,18 @@ public class Main {
 		}
 
 		List<List<String>> groups = FileUtil.groupLines(addresses, groupCount);
-		SMTPSender mailCannon = new SMTPSender(SERVER);
+		try (SMTPSender mailCannon = new SMTPSender(SERVER)) {
+			for (List<String> group : groups) {
+				int msgIdx = Math.abs(new Random().nextInt() % messages.size());
 
-		for (List<String> group : groups) {
-			int msgIdx = Math.abs(new Random().nextInt() % messages.size());
+				String message = messages.get(msgIdx);
+				String sender = group.getFirst();
 
-			String message = messages.get(msgIdx);
-			String sender = group.getFirst();
+				for (int i = 1; i < group.size(); ++i) {
+					String receiver = group.get(i);
 
-			for (int i = 1; i < group.size(); ++i) {
-				String receiver = group.get(i);
-
-				mailCannon.sendMessage(sender, receiver, SUBJECT, message);
+					mailCannon.sendMessage(sender, receiver, SUBJECT, message);
+				}
 			}
 		}
 	}

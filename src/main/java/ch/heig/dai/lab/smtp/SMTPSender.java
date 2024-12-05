@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-public class SMTPSender {
+public class SMTPSender implements Closeable {
 
 	private static final String MSG_HELO = "HELO client";
 	private static final String MSG_FROM = "MAIL FROM: <%s>";
@@ -16,21 +16,51 @@ public class SMTPSender {
 		To: %s
 		Subject: %s
 
-		%s
-		\r
-		.\r
-  
-		""";
+		%s\r
+		.""";
 	private static final String MSG_QUIT = "QUIT";
 
 	private static final int START_CODE = 220;
 	private static final int OK_CODE = 250;
 	private static final int DATA_CODE = 354;
 
-	private final ServerData server;
+	private final Socket connection;
+	private final BufferedWriter os;
+	private final BufferedReader is;
 
 	public SMTPSender(ServerData server) {
-		this.server = server;
+		Socket socket = null;
+		BufferedWriter os = null;
+		BufferedReader is = null;
+
+		// Try to connect
+		try {
+			socket = new Socket(server.host(), server.port());
+			os = new BufferedWriter(new OutputStreamWriter(
+				socket.getOutputStream(),
+				StandardCharsets.UTF_8
+			));
+			is = new BufferedReader(new InputStreamReader(
+				socket.getInputStream(),
+				StandardCharsets.UTF_8
+			));
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
+
+		this.connection = socket;
+		this.os = os;
+		this.is = is;
+
+		// Initial SMTP message
+		try {
+			checkResponseCode(is.readLine(), START_CODE);
+
+			// Message initiation
+			sendAndCheckResponse(MSG_HELO);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -42,50 +72,44 @@ public class SMTPSender {
 	 * @param content body of the e-mail
 	 */
 	public void sendMessage(String from, String to, String subject, String content) {
-		try (
-			Socket connection = new Socket(server.host(), server.port());
-			var os = new BufferedWriter(new OutputStreamWriter(
-				connection.getOutputStream(),
-				StandardCharsets.UTF_8
-			));
-			var is = new BufferedReader(new InputStreamReader(
-				connection.getInputStream(),
-				StandardCharsets.UTF_8
-			))
-		) {
-			checkResponseCode(is.readLine(), START_CODE);
-
-			// Message initiation
-			sendAndCheckResponse(os, is, MSG_HELO);
-
+		try {
 			// From
-			sendAndCheckResponse(os, is, MSG_FROM.formatted(from));
+			sendAndCheckResponse(MSG_FROM.formatted(from));
 
 			// To
-			sendAndCheckResponse(os, is, MSG_TO.formatted(to));
+			sendAndCheckResponse(MSG_TO.formatted(to));
 
 			// Data
-			sendAndCheckResponse(os, is, MSG_DATA, DATA_CODE);
+			sendAndCheckResponse(MSG_DATA, DATA_CODE);
 
 			// Content
-			sendAndCheckResponse(os, is, MSG_BODY.formatted(from, to, subject, content));
-
-			// Quit
-			send(os, MSG_QUIT);
+			sendAndCheckResponse(MSG_BODY.formatted(from, to, subject, content));
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 		}
+	}
 
+	public void close() {
+		try {
+			send(MSG_QUIT);
+
+			os.close();
+			is.close();
+			connection.close();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	@Override
 	public String toString() {
-		return "SMTP sender - MX at " + server;
+		return "SMTP sender - MX at " + connection.getInetAddress().getHostAddress() + ":" + connection.getPort();
 	}
 
 
 
-	private static void checkResponseCode(String response, int code) throws IOException {
+	private void checkResponseCode(String response, int code) throws IOException {
+		System.out.println("S> " + response);
 		int responseCode;
 		try {
 			responseCode = Integer.parseInt(response.split(" ")[0]);
@@ -97,17 +121,18 @@ public class SMTPSender {
 			throw new IOException("Expected response code: %d\nActual response code: %d\n".formatted(code, responseCode));
 	}
 
-	private static void send(BufferedWriter os, String message) throws IOException {
+	private void send(String message) throws IOException {
+		System.out.println("C> " + message);
 		os.write(message + "\r\n");
 		os.flush();
 	}
 
-	private static void sendAndCheckResponse(BufferedWriter os, BufferedReader is, String message) throws IOException {
-		sendAndCheckResponse(os, is, message, OK_CODE);
+	private void sendAndCheckResponse(String message) throws IOException {
+		sendAndCheckResponse(message, OK_CODE);
 	}
 
-	private static void sendAndCheckResponse(BufferedWriter os, BufferedReader is, String message, int code) throws IOException {
-		send(os, message);
+	private void sendAndCheckResponse(String message, int code) throws IOException {
+		send(message);
 		checkResponseCode(is.readLine(), code);
 	}
 }
