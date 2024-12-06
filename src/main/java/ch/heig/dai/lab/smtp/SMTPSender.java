@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Data stream that handles a connection to a SMTP server.
+ */
 public class SMTPSender implements Closeable {
 
 	private static final String MSG_HELO = "HELO client";
