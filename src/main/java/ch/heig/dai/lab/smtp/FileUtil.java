@@ -1,17 +1,27 @@
 package ch.heig.dai.lab.smtp;
 
+import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Defines various static methods for manipulating file contents.
+ */
 public class FileUtil {
 	private FileUtil() {}
 
+	/**
+	 * Reads the contents of a file, the lines of which are then arranged in a list.
+	 *
+	 * @param fileName     the name of the file
+	 * @return             a list containing the lines of the file
+	 * @throws IOException if a problem occurs during the file read
+	 */
 	public static List<String> readList(String fileName) throws IOException {
 		List<String> list = new LinkedList<>();
 
@@ -30,6 +40,13 @@ public class FileUtil {
 		return list;
 	}
 
+	/**
+	 * Organizes the elements of a list in groups according to the specified group count.
+	 *
+	 * @param lines      the array to organize
+	 * @param groupCount the desired number of groups
+	 * @return           a bidimensional list containing the groups of elements
+	 */
 	public static <T> List<List<T>> groupLines(List<T> lines, int groupCount) {
 		if (groupCount < 1) {
 			throw new IllegalArgumentException("groupCount must be greater than 0.");
