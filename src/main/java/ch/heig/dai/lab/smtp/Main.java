@@ -14,11 +14,8 @@ public class Main {
 	private static final String SUBJECT = "Prank";
 
 	public static void main(String[] args) {
-		if (args.length != 3) {
-			System.err.println("Correct command: smtp <addresses file> <messages file> <group count>");
-
-			return;
-		}
+		if (args.length != 3)
+			throw new IllegalArgumentException("Correct command: smtp <addresses file> <messages file> <group count>");
 
 		List<String> addresses;
 		List<String> messages;
@@ -27,22 +24,15 @@ public class Main {
 			addresses = FileUtil.readList(args[0]);
 			messages = FileUtil.readList(args[1]);
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
-
-			return;
+			throw new RuntimeException(e);
 		}
 
 		int groupCount = Integer.parseInt(args[2]);
 
-		if (addresses.size() < groupCount * MIN_ADDRESSES_IN_GROUP) {
-			System.err.println("Too few addresses.");
-
-			return;
-		} else if (addresses.size() > groupCount * MAX_ADDRESSES_IN_GROUP) {
-			System.err.println("Too many addresses.");
-
-			return;
-		}
+		if (addresses.size() < groupCount * MIN_ADDRESSES_IN_GROUP)
+			throw new IllegalArgumentException("Too few addresses.");
+		else if (addresses.size() > groupCount * MAX_ADDRESSES_IN_GROUP)
+			throw new IllegalArgumentException("Too many addresses.");
 
 		List<List<String>> groups = FileUtil.groupLines(addresses, groupCount);
 		try (SMTPSender mailCannon = new SMTPSender(SERVER)) {
