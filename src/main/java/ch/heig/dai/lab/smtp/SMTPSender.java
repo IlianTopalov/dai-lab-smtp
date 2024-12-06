@@ -81,8 +81,6 @@ public class SMTPSender implements Closeable {
 
 			// Data
 			sendAndCheckResponse(MSG_DATA, DATA_CODE);
-
-			// Content
 			sendAndCheckResponse(MSG_BODY.formatted(from, to, subject, content));
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
