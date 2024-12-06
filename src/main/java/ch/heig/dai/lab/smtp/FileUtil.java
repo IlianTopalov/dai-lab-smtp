@@ -58,11 +58,9 @@ public class FileUtil {
 
 		int elementsPerGroup = lines.size() / groupCount + (lines.size() % groupCount == 0 ? 0 : 1);
 		List<List<T>> result = new ArrayList<>(groupCount);
-		for (int i = 0; i < groupCount; ++i) {
-			result.add(new ArrayList<>(elementsPerGroup));
-		}
 
 		for (int i = 0; i < groupCount; ++i) {
+			result.add(new ArrayList<>(elementsPerGroup));
 			for (int j = 0; j < elementsPerGroup; ++j) {
 				int sourceIdx = i * elementsPerGroup + j;
 				if (sourceIdx >= lines.size()) {
