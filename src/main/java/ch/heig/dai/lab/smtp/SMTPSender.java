@@ -15,6 +15,8 @@ public class SMTPSender implements Closeable {
 	private static final String MSG_DATA = "DATA";
 	private static final String MSG_BODY =
 		"""
+		Content-Type: text/plain; charset=UTF-8
+		Content-Transfer-Encoding: 7bit
 		From: %s
 		To: %s
 		Subject: %s
