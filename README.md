@@ -19,14 +19,22 @@ devmail server on docker:
 
 ## Run the tool
 
-In order to run the SMTP Maleficent Trickster Program, you have to modify
-the `config` file in order to provide the server ip address and port, the subject
-of the messages, the group count, and the paths to the addresses and messages files. \
+In order to run the SMTP Maleficent Trickster Program, you have to write a `config` file in order to provide the server ip address and port, the subject
+of the messages, the group count, and the paths to the addresses and messages files.
 You can do that with any text editor like Notepad, TextEdit or Visual Studio Code.
 
-The config file is located by default in the same directory as the executable. \
+The config file is located at `./.config` by default, whrere `.` is the working directory. \
 You can provide an alternative path by using the `-config <path>` option.
 
+The config file follows the following structure:
+```
+host: <host_ip>
+port: <host_port>
+addresses: <addresses_file_path>
+messages: <messages_file_path>
+subject: <message_subject>
+groups: <group_count>
+```
 
 ## Implementation details
 
