@@ -6,8 +6,6 @@ import java.util.Random;
 
 public class Main {
 
-	private static final ServerData SERVER = new ServerData("localhost", 1025);
-
 	private static final int MIN_ADDRESSES_IN_GROUP = 2;
 	private static final int MAX_ADDRESSES_IN_GROUP = 5;
 
@@ -21,7 +19,7 @@ public class Main {
 			if (args.length == 2) {
 				config = FileUtil.readList(args[0]);
 			} else {
-				config = FileUtil.readList("configuration.config");
+				config = FileUtil.readList("smtpSender.config");
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
