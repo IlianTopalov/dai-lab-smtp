@@ -66,6 +66,10 @@ public class Main {
 
 				for (int i = 1; i < group.size(); ++i) {
 					String receiver = group.get(i);
+					if (!receiver.contains("@") || !receiver.matches(".*\\..*$")) {
+						System.err.printf("Wrong address format: %s\n", receiver);
+						continue;
+					}
 
 					mailCannon.sendMessage(sender, receiver, subject, message);
 				}
