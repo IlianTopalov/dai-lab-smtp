@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * Defines various static methods for manipulating file contents.
  */
-public class FileUtil {
-	private FileUtil() {}
+public class Util {
+	private Util() {}
 
 	/**
 	 * Reads the contents of a file, the lines of which are then arranged in a list.
