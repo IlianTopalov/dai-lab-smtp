@@ -45,8 +45,8 @@ public class Main {
 		}
 
 		try {
-			addresses = FileUtil.readList(addressesPath);
-			messages = FileUtil.readList(messagesPath);
+			addresses = Util.readList(addressesPath);
+			messages = Util.readList(messagesPath);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -56,7 +56,7 @@ public class Main {
 		else if (addresses.size() > groupCount * MAX_ADDRESSES_IN_GROUP)
 			throw new IllegalArgumentException("Too many addresses.");
 
-		List<List<String>> groups = FileUtil.groupLines(addresses, groupCount);
+		List<List<String>> groups = Util.groupLines(addresses, groupCount);
 		try (SMTPSender mailCannon = new SMTPSender(server)) {
 			for (List<String> group : groups) {
 				int msgIdx = Math.abs(new Random().nextInt() % messages.size());
