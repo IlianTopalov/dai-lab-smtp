@@ -10,7 +10,7 @@ public class Main {
 	private static final int MIN_ADDRESSES_IN_GROUP = 2;
 	private static final int MAX_ADDRESSES_IN_GROUP = 5;
 
-	private static final String DEFAULT_CONFIG_FILE_NAME = "config";
+	private static final String DEFAULT_CONFIG_FILE_NAME = ".config";
 
 	public static void main(String[] args) {
 		if ((args.length == 2 && !args[0].equals("-config")) || args.length == 1 || args.length > 2)
